@@ -89,6 +89,8 @@ class population:
 
     def checkIdentical(self,fileName,dict):
         #check whether the json file should be updated
+        #no need to update if time is equal to system time
+        #also, the first 2 set of data (id, population and new thread) should be equal
         #return boolean value
         pass
 
