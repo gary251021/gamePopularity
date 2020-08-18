@@ -4,10 +4,10 @@ import json
 import urllib.request as r
 import traceback
 import time
-from datetime import date
+from datetime import date, datetime, timedelta
 import re
 import unicodedata
-#please, open this program everydayu
+#please, open this program everyday
 class population:
     
 
@@ -23,7 +23,7 @@ class population:
     def usingDriver(self,url):
         driver = webdriver.Chrome('chromedriver.exe')
         driver.get(url)
-        time.sleep(0.5)
+        time.sleep(1)
         return driver
 
     #extraction of data
@@ -53,10 +53,9 @@ class population:
         title = re.split("\s$",li[1].getText())[0]
         tmpStorage.append(title)
 
-        link = li[1].find("a").get("href")
-        link = re.findall("\d+",link)[0]
-        tmpStorage.append(link)
-
+        gameId = li[1].find("a").get("href")
+        gameId = re.findall("\d+",gameId)[0]
+        tmpStorage.append(int(gameId))
         return tmpStorage
     def getPopulationAndThread(self,iter):
         numRegex = "[\s]\d+[\s]"
@@ -87,27 +86,54 @@ class population:
             storage.append(data)          
         return storage
 
-    def checkIdentical(self,fileName,dict):
+    def getDataDate(self):
+        #since the website is updated at 1200nn
+        #the date should be adjusted
+        #e.g. if the program is run at next day, it should return yesterday date5
+        time = datetime.now()
+        if time.hour < 12:
+            d = timedelta(days = 1)
+            time = time - d
+        return str(time.date())
+
+    def isIdentical(self,fileName,towrite):
         #check whether the json file should be updated
         #no need to update if time is equal to system time
         #also, the first 2 set of data (id, population and new thread) should be equal
         #return boolean value
-        pass
+        time = self.getDataDate()
+        with open(f"data/{fileName}","r") as f:
+            j = json.load(f)
+            if len(j["content"]) == 0:
+                print("the file is newly created(isIdentical function)")
+                return False
+            if j["content"][len(j["content"]) - 1]["date"] == towrite["date"]:
+                print("already exist(isIdentical function)")
+                return True
+        return False
 
     def writetoJson(self,url,typeName,fileName):
         #write to json only if there's new change to the file itself
         #call the checkIdentical function
         towrite = {}
+        content = []
         dic = self.getData(url)
-        towrite["date"] = str(date.today())
-        towrite["type"] = typeName
+        towrite["date"] = self.getDataDate()
         towrite["data"] = dic
-        with open(fileName,"a") as f:
+        try:
+            with open(f"data/{fileName}","r+") as f:
+                data = json.load(f)
+        except: #if the file is newly created
+            with open(f"data/{fileName}","w") as f:
+                data = {"type":typeName,"content":[]}
+                json.dump(data,f)
+        data["content"].append(towrite)
+        if not self.isIdentical(fileName,towrite):
             try:
-                x = json.dump(towrite,f,ensure_ascii=False)
-            except:
-                pass
-
+                with open(f"data/{fileName}","w",encoding="utf-8") as f:
+                    json.dump(data,f,ensure_ascii=False)
+            except Exception:
+                print(Exception)
     #debug
     def printInfo(self,link):
         try:
@@ -121,6 +147,7 @@ class population:
             print(f"\n{tb}")
         else:
             print("Finished")
+
     def mainLoop(self):
         self.writetoJson(self.mobileLink,"mobile-game","mobile.json")
         self.writetoJson(self.onlineLink,"online-game","online.json")
@@ -129,11 +156,6 @@ class population:
         self.writetoJson(self.PCGameLink,"pc-game","pc.json")
         
 
-"""url = "https://worstit9.github.io/index.html"
-driver = webdriver.Chrome('chromedriver.exe')
-driver.get(url)
-time.sleep(1)
-soup = bs4.BeautifulSoup(driver.page_source)"""
+
 p = population()
 p.mainLoop()
-#print(p.getData(p.onlineLink))
