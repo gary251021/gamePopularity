@@ -108,7 +108,7 @@ class population:
                 print("the file is newly created(isIdentical function)")
                 return False
             if j["content"][len(j["content"]) - 1]["date"] == towrite["date"]:
-                print("already exist(isIdentical function)")
+                print("already exist(isIdentical function), no need to update")
                 return True
         return False
 
@@ -131,6 +131,7 @@ class population:
             try:
                 with open(f"data/{fileName}","w",encoding="utf-8") as f:
                     json.dump(data,f,ensure_ascii=False)
+                    print("Successfully updated")
             except Exception:
                 print(Exception)
     #debug
