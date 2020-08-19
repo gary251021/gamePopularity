@@ -102,7 +102,7 @@ class population:
         #also, the first 2 set of data (id, population and new thread) should be equal
         #return boolean value
         time = self.getDataDate()
-        with open(f"data/{fileName}","r") as f:
+        with open(f"data/{fileName}","r",encoding="utf-8") as f:
             j = json.load(f)
             if len(j["content"]) == 0:
                 print("the file is newly created(isIdentical function)")
@@ -120,10 +120,10 @@ class population:
         towrite["date"] = self.getDataDate()
         towrite["data"] = dic
         try:
-            with open(f"data/{fileName}","r+") as f:
+            with open(f"data/{fileName}","r+",encoding="utf-8") as f:
                 data = json.load(f)
         except: #if the file is newly created
-            with open(f"data/{fileName}","w") as f:
+            with open(f"data/{fileName}","w",encoding="utf-8") as f:
                 data = {"type":typeName,"content":[]}
                 json.dump(data,f)
         data["content"].append(towrite)
@@ -149,10 +149,10 @@ class population:
 
     def mainLoop(self):
         self.writetoJson(self.mobileLink,"mobile-game","mobile.json")
-        #self.writetoJson(self.onlineLink,"online-game","online.json")
-        #self.writetoJson(self.consoleLink,"console-game","console.json")
-        #self.writetoJson(self.webGameLink,"web-game","web.json")
-        #self.writetoJson(self.PCGameLink,"pc-game","pc.json")
+        self.writetoJson(self.onlineLink,"online-game","online.json")
+        self.writetoJson(self.consoleLink,"console-game","console.json")
+        self.writetoJson(self.webGameLink,"web-game","web.json")
+        self.writetoJson(self.PCGameLink,"pc-game","pc.json")
         
 
 
