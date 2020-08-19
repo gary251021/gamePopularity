@@ -116,7 +116,6 @@ class population:
         #write to json only if there's new change to the file itself
         #call the checkIdentical function
         towrite = {}
-        content = []
         dic = self.getData(url)
         towrite["date"] = self.getDataDate()
         towrite["data"] = dic
