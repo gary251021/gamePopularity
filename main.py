@@ -149,10 +149,10 @@ class population:
 
     def mainLoop(self):
         self.writetoJson(self.mobileLink,"mobile-game","mobile.json")
-        self.writetoJson(self.onlineLink,"online-game","online.json")
-        self.writetoJson(self.consoleLink,"console-game","console.json")
-        self.writetoJson(self.webGameLink,"web-game","web.json")
-        self.writetoJson(self.PCGameLink,"pc-game","pc.json")
+        #self.writetoJson(self.onlineLink,"online-game","online.json")
+        #self.writetoJson(self.consoleLink,"console-game","console.json")
+        #self.writetoJson(self.webGameLink,"web-game","web.json")
+        #self.writetoJson(self.PCGameLink,"pc-game","pc.json")
         
 
 
