@@ -134,19 +134,28 @@ class population:
                     print(f"Successfully updated {fileName}")
             except Exception:
                 print(Exception)
+
     #debug
-    def printInfo(self,link):
+    def printJsonInfo(self,fileName,dateObj,numberToPrint = 0):
+        d = str(dateObj)
         try:
-            req = r.Request(link,headers={"User-Agent":"Mozilla/5.0"})
-            page = r.urlopen(req).read() 
-            soup = bs4.BeautifulSoup(page,'html.parser')
-            print(soup.title)
-        except:
-            print("some error is occured")
-            tb = traceback.format_exc()
-            print(f"\n{tb}")
-        else:
-            print("Finished")
+            with open(f"data/{fileName}","r+",encoding="utf-8") as f:
+                data = json.load(f)
+            print(f"{fileName}:")
+            for i in data["content"]:
+                if(d == i["date"]):
+                    if numberToPrint == 0 or numberToPrint > 30:
+                        for j in i["data"]:
+                            print(j)
+                    else:
+                        for ctr in range(numberToPrint):
+                            print (i["data"][ctr])
+        except Exception:
+            traceback.format_exc()
+            print("There's some error in the json file")
+        
+
+
 
     def mainLoop(self):
         self.writetoJson(self.mobileLink,"mobile-game","mobile.json")
@@ -154,8 +163,17 @@ class population:
         self.writetoJson(self.consoleLink,"console-game","console.json")
         self.writetoJson(self.webGameLink,"web-game","web.json")
         self.writetoJson(self.PCGameLink,"pc-game","pc.json")
+
+    def checkJsonForEach(self,dateObj,numberToPrint = 0):
+        li = ["mobile.json","online.json","console.json","web.json","pc.json"]
+        for i in li:
+            self.printJsonInfo(i,dateObj,numberToPrint)
         
 
-
+tStart = time.time()
+d = date(2020,8,20)
 p = population()
-p.mainLoop()
+#p.mainLoop()
+p.checkJsonForEach(d,3)
+tEnd = time.time()
+print(f"Total running time: {tEnd-tStart:.3f}")
