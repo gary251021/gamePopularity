@@ -81,9 +81,10 @@ class population:
             data["name"] = li[1]
             data["gameID"] = li[2]
             data["rank"] = li[0]
-            data["population"] = txt[0]
-            data["newThread"] = txt[1]
-            storage.append(data)          
+            data["population"] = txt[len(txt)-2]
+            data["newThread"] = txt[len(txt)-1]
+            storage.append(data)   
+        print(storage)
         return storage
 
     def getDataDate(self):
@@ -171,9 +172,10 @@ class population:
         
 
 tStart = time.time()
-d = date(2020,8,20)
+d = date.today()
 p = population()
-#p.mainLoop()
+p.mainLoop()
 p.checkJsonForEach(d,3)
+p.getData(p.consoleLink)
 tEnd = time.time()
 print(f"Total running time: {tEnd-tStart:.3f}")
