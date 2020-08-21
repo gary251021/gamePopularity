@@ -84,7 +84,6 @@ class population:
             data["population"] = txt[len(txt)-2]
             data["newThread"] = txt[len(txt)-1]
             storage.append(data)   
-        print(storage)
         return storage
 
     def getDataDate(self):
