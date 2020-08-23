@@ -7,7 +7,7 @@ import time
 from datetime import date, datetime, timedelta
 import re
 import unicodedata
-#please, open this program everyday
+#please, run this program everyday
 class population:
     
 
@@ -174,7 +174,6 @@ tStart = time.time()
 d = date.today()
 p = population()
 p.mainLoop()
-p.checkJsonForEach(d,3)
-p.getData(p.consoleLink)
+p.checkJsonForEach(d,5)
 tEnd = time.time()
 print(f"Total running time: {tEnd-tStart:.3f}")
