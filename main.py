@@ -209,6 +209,7 @@ def handleargs():
             if (len(sys.argv) != 2):
                 raise Exception("bad")
             print("doing main function")
+            mainfunction()
         elif (sys.argv[1] == '-v'):
             if(sys.argv[2]):
                 try:
