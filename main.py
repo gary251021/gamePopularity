@@ -7,6 +7,7 @@ import time
 from datetime import date, datetime, timedelta
 import re
 import unicodedata
+import sys
 #please, run this program everyday
 class population:
     
@@ -168,13 +169,67 @@ class population:
         li = ["mobile.json","online.json","console.json","web.json","pc.json"]
         for i in li:
             self.printJsonInfo(i,dateObj,numberToPrint)
-        
+
+def openFile(fileName):
+    with open(f"data/{fileName}.json","r",encoding="utf-8") as f:
+            j = json.load(f)
+    return j
+
+def mainfunction():
+    d = date.today()
+    p = population()
+    p.mainLoop()
+    p.checkJsonForEach(d,5)
+
+def printManual():
+    print("Arguments:")
+    print("-s: start noramlly")
+    print("-v filename id times: view the information of the game")
+
+
+
+def singleGameData(jsonFile,noOfRecords=0):
+    li = []
+    for x in jsonFile:
+        d = x['date']
+        for standing in x['data']:
+            if(standing['gameID'] == int(sys.argv[3])):
+                tuples = (standing['name'],d,standing['population'],standing['newThread'])
+                li.append(tuples)                
+                break
+    if (noOfRecords > 0):
+        return li[len(li) - noOfRecords:]
+    return li
+
+def handleargs():
+    try:
+        if(len(sys.argv) < 2 or len(sys.argv) > 5 ):
+            raise Exception()
+        if (sys.argv[1] == '-s'):
+            if (len(sys.argv) != 2):
+                raise Exception("bad")
+            print("doing main function")
+        elif (sys.argv[1] == '-v'):
+            if(sys.argv[2]):
+                try:
+                    jsonFile = openFile(sys.argv[2])['content']
+                except:
+                    print("No this file")
+                if(sys.argv[3]):
+                    try:
+                        if(sys.argv[4]):
+                            s = singleGameData(jsonFile,int(sys.argv[4]))
+                    except: #argv[4] doesn't exist
+                            s = singleGameData(jsonFile)
+                    for x in s:
+                        print(x)
+                
+
+    except Exception as e:
+        printManual()
 
 tStart = time.time()
-d = date.today()
-p = population()
-p.mainLoop()
-p.checkJsonForEach(d,5)
+handleargs()
 tEnd = time.time()
 print(f"Total running time: {tEnd-tStart:.3f}")
 
