@@ -185,6 +185,8 @@ def printManual():
     print("Arguments:")
     print("-s: start noramlly")
     print("-v filename id times: view the information of the game")
+    print("Name of files:")
+    print("console mobile online pc web")
 
 
 
@@ -219,7 +221,7 @@ def handleargs():
                 if(sys.argv[3]):
                     try:
                         if(sys.argv[4]):
-                            s = singleGameData(jsonFile,int(sys.argv[4]))
+                            s = singleGameData(jsonFile.lower,int(sys.argv[4]))
                     except: #argv[4] doesn't exist
                             s = singleGameData(jsonFile)
                     for x in s:
