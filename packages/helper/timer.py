@@ -13,5 +13,3 @@ class Timer:
 
 
 
-d = Timer()
-print(d.today)
