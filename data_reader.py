@@ -4,7 +4,7 @@ from packages.helper.string_modifier import StringModifier
 from packages.helper.timer import Timer
 from fake_useragent import UserAgent
 class DataReader:
-	timeout_time = 2
+	timeout_time = 1
 	
 	def __init__(self,type,category,req_page):
 		self.category = category
@@ -55,5 +55,10 @@ class DataReader:
 	@link.setter
 	def link(self,page):
 		self._link = f"https://forum.gamer.com.tw/ajax/rank.php?c={self.type}&page={page}"
+
+
+class SyncDataReader(DataReader):
+	def __init__(self,type,category,req_page):
+		super().__init__(type,category,req_page)
 
 
