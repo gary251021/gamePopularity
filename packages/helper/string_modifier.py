@@ -20,6 +20,10 @@ class StringModifier:
 		except AttributeError:
 			print(f"no extension name in {str}")
 			return str
+
+	@staticmethod
+	def get_filename(category_name):
+		return category_name + ".json"
 			
 
 

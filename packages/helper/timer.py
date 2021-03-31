@@ -28,14 +28,12 @@ class Timer:
 
 	@staticmethod
 	def get_prev_day_object(deltadate):
-		d = timedelta(days = deltadate)
-		s = datetime.now() - d 
-		return s.date()
+		if datetime.now().hour >= 12:
+			d = timedelta(days = deltadate)
+		else:
+			d = timedelta(days = deltadate + 1)
+		s = datetime.now().replace(hour=0,minute=0,second=0,microsecond=0) - d 
+		return s
 		
 
-t = Timer()
-print(t.today)
-print(Timer.get_prev_day_object(3))
-print(Timer.get_prev_day_string(3))
-print(Timer.get_date_object("2020-01-01"))
 

@@ -29,6 +29,7 @@ class DataReader:
 				for game in response:
 					self.datas.append(self.get_data_to_write(game))
 			except Exception as e:
+				#some page return [] as there no any more subpages, or the format returned is different
 				print(e)
 				raise
 			
