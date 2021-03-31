@@ -25,8 +25,12 @@ class DataReader:
 			self.link = current_page
 			response = requests.get(self.link,headers=self.headers).json() #get the list
 			print(f"{self.category} in page {current_page}")
-			for game in response:
-				self.datas.append(self.get_data_to_write(game))
+			try:
+				for game in response:
+					self.datas.append(self.get_data_to_write(game))
+			except Exception as e:
+				print(e)
+				raise
 			
 			time.sleep(self.timeout_time)
 			
@@ -35,11 +39,14 @@ class DataReader:
 		the start_request method will invoke this method to get the dictonary object to write
 		'''
 		to_write = {} 
-		to_write["name"] = StringModifier.remove_end_space(game["title"])
-		to_write["gameID"] = game["bsn"]
-		to_write["rank"] = game["ranking"]
-		to_write["population"] = int(game["hot"])
-		to_write["newThread"] = int(game["article"])
+		try:			
+			to_write["name"] = StringModifier.remove_end_space(game["title"])
+			to_write["gameID"] = game["bsn"]
+			to_write["rank"] = game["ranking"]
+			to_write["population"] = int(game["hot"])
+			to_write["newThread"] = int(game["article"])
+		except Exception:
+			raise KeyError("No valid key found in the json file")
 		return to_write
 
 		
@@ -60,5 +67,8 @@ class DataReader:
 class SyncDataReader(DataReader):
 	def __init__(self,type,category,req_page):
 		super().__init__(type,category,req_page)
+
+	def get_data_to_write(self, game):
+		pass
 
 
