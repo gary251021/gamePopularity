@@ -13,8 +13,8 @@ class Timer:
 		return str(self._today.date())
 
 	@staticmethod
-	def get_today_object(self):
-		return datetime.now().date()
+	def get_today_object():
+		return Timer.get_prev_day_object(0)
 
 
 	@staticmethod

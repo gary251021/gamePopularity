@@ -4,7 +4,7 @@ from packages.helper.string_modifier import StringModifier
 from packages.helper.timer import Timer
 from fake_useragent import UserAgent
 class DataReader:
-	timeout_time = 1
+	timeout_time = 0.5
 	
 	def __init__(self,type,category,req_page):
 		self.category = category

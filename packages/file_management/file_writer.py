@@ -2,7 +2,7 @@ from abc import abstractmethod
 from packages.file_management.file_reader import DBReader
 from packages.helper.timer import Timer
 from packages.helper.string_modifier import StringModifier
-
+from datetime import datetime
 from pymongo import MongoClient
 import json
 
@@ -93,8 +93,13 @@ class DBWriter(FileWriter):
 				self.write_to_storage(date_obj,one_day_data["data"])
 
 
-	def write_to_storage(self,date,data):
-		toappend = {"date": date,"data":data}
+	def write_to_storage(self,date_obj,data):
+		if not isinstance(date_obj,datetime):
+			raise TypeError("the date input must be a datetime object")
+		toappend = {"date": date_obj,"data":data}
 		result = self.db[self.category_name].insert_one(toappend)      #insert one into the collection name
 		#print("result id: "+ str(result.inserted_id))
+
+	def pop_from_storage(self):
+		pass
 

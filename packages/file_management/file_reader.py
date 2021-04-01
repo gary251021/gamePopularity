@@ -23,6 +23,10 @@ class FileReader:
 	@abstractmethod
 	def read_certain_date_data(self):
 		pass
+	
+	@abstractmethod
+	def read_game_data(self,gameid):
+		pass
 
 class JsonReader(FileReader):
 	def __init__(self,file_name):
@@ -42,12 +46,16 @@ class JsonReader(FileReader):
 	def read_certain_date_data(self):
 		pass
 
+	def read_game_data(self,gameid):
+		pass
+
 class DBReader(FileReader):
 	def __init__(self,category_name,uri):
 		super().__init__(category_name)
 		try:
 			self.client = MongoClient(uri)
 			self.db = self.client.gamePopularityDB
+			self.collection = self.db[self.category]
 		except Exception as e:
 			print(e)
 
@@ -63,3 +71,6 @@ class DBReader(FileReader):
 
 	def read_certain_date_data(self):
 		pass
+
+	def read_game_data(self,gameid):
+		self.collection.find_one()
