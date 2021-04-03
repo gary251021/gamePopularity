@@ -8,7 +8,7 @@ when initializing the program, also allow check game's data (FileReader)
 from packages.file_management.file_writer import *
 from packages.file_management.file_reader import *
 from packages.helper.timer import Timer
-from data_reader import DataReader
+from packages.data_reader.data_reader import DataReader
 
 import config
 
@@ -57,8 +57,10 @@ def copy_all():
 		print(f"{category} is sucessfully inserted")
 
 if __name__ == "__main__":
-	#fetch_all(3)
-	DBReader("mobile",config.db_uri)
+	#fetch_all(1)
+	JsonWriter("acg.json").pop_from_storage()
+	
+
 
 
 

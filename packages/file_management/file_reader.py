@@ -17,11 +17,11 @@ class FileReader:
 		pass
 
 	@abstractmethod
-	def read_today_data(self):
+	def read_today_data(self,rank):
 		pass
 
 	@abstractmethod
-	def read_certain_date_data(self):
+	def read_certain_date_data(self,date_obj,rank):
 		pass
 	
 	@abstractmethod
@@ -66,11 +66,33 @@ class DBReader(FileReader):
 			return True #already have inserted data
 		return False
 
-	def read_today_data(self):
-		pass
+	def read_today_data(self,rank = 0):
+		
+		return self.read_certain_date_data(Timer.get_today_object(),rank)
 
-	def read_certain_date_data(self):
-		pass
+	def read_certain_date_data(self,date_obj,rank = 0):
+		if not isinstance(rank,int):
+			raise TypeError("The rank must be an integer")
+		elif rank < 0:
+			raise ValueError("The rank must be positive")
+		
+
+
+		query = {"date":date_obj}
+		projection = {
+			"data":1 if rank == 0 else {"$slice":rank},
+			"_id":0
+		}
+		return list(self.collection.find(query,projection))
 
 	def read_game_data(self,gameid):
-		self.collection.find_one()
+		#return the game data at come pate, excluding the gameID itself
+		query = {"data.gameID":gameid}
+		projection = {
+			"date":1,
+			"data":{"$elemMatch":{"gameID":gameid}},
+			"_id":0
+			}
+		return list(self.collection.find(query,projection))
+			
+		

@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from os import read
 from packages.file_management.file_reader import DBReader
 from packages.helper.timer import Timer
 from packages.helper.string_modifier import StringModifier
@@ -96,9 +97,18 @@ class DBWriter(FileWriter):
 	def write_to_storage(self,date_obj,data):
 		if not isinstance(date_obj,datetime):
 			raise TypeError("the date input must be a datetime object")
-		toappend = {"date": date_obj,"data":data}
-		result = self.db[self.category_name].insert_one(toappend)      #insert one into the collection name
-		#print("result id: "+ str(result.inserted_id))
+
+		#see whether the day's data is copied or not
+		reader = DBReader(self.category_name,self.uri)
+		if reader.check_duplicate(date_obj):
+			print(str(date_obj) + " is already in the database " + self.category_name)
+			return False
+		else:
+			#if not in the database, insert it to database
+			toappend = {"date": date_obj,"data":data}
+			result = self.db[self.category_name].insert_one(toappend)      #insert one into the collection name
+			#print("result id: "+ str(result.inserted_id))
+			return True
 
 	def pop_from_storage(self):
 		pass
