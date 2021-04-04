@@ -36,6 +36,15 @@ def fetch_all(pages):
 		JsonWriter(str(category+".json")).write_to_storage(d.datas)
 		DBWriter(category,config.db_uri).write_to_storage(Timer().get_today_object(),d.datas)
 
+def read_all_today(rank = None):
+	for category in list_to_read:
+		reader = DBReader(category,config.db_uri)
+		print (reader.read_today_data(rank))
+
+	for category in additional_list:
+		reader = DBReader(category,config.db_uri)
+		print (reader.read_today_data(rank))
+
 def pop_all():
 	for category in additional_list:
 		JsonWriter(str(category+".json")).pop_from_storage()
@@ -57,8 +66,14 @@ def copy_all():
 		print(f"{category} is sucessfully inserted")
 
 if __name__ == "__main__":
-	#fetch_all(1)
-	JsonWriter("acg.json").pop_from_storage()
+	#fetch_all(3)
+	read_all_today(5)
+
+	
+
+
+	
+	
 	
 
 

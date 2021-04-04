@@ -70,9 +70,10 @@ class DBReader(FileReader):
 		
 		return self.read_certain_date_data(Timer.get_today_object(),rank)
 
-	def read_certain_date_data(self,date_obj,rank = 0):
-		if not isinstance(rank,int):
-			raise TypeError("The rank must be an integer")
+	def read_certain_date_data(self,date_obj,rank = None):
+		if not(rank is None):  #if rank is not none and not int
+			if not isinstance(rank,int):
+				raise TypeError("The rank must be an integer")
 		elif rank < 0:
 			raise ValueError("The rank must be positive")
 		
@@ -80,19 +81,76 @@ class DBReader(FileReader):
 
 		query = {"date":date_obj}
 		projection = {
-			"data":1 if rank == 0 else {"$slice":rank},
+			"data":1 if rank is None else {"$slice":rank},
 			"_id":0
 		}
+		
 		return list(self.collection.find(query,projection))
 
-	def read_game_data(self,gameid):
-		#return the game data at come pate, excluding the gameID itself
+	def read_game_data(self,gameid,return_doc = None):
+		#return the game data at come pate
+		if not(return_doc is None):
+			if not isinstance(return_doc,int):
+				raise TypeError("The return_doc must be an integer")
+		elif return_doc < 0:
+			raise ValueError("The return_doc must be positive")
+
 		query = {"data.gameID":gameid}
+		
 		projection = {
 			"date":1,
-			"data":{"$elemMatch":{"gameID":gameid}},
+			"data":{
+				"$filter":{
+					"input":'$data',
+					"as":"data",
+					"cond":{"$eq":["$$data.gameID",gameid]}
+				}
+			},
 			"_id":0
-			}
-		return list(self.collection.find(query,projection))
+		}
+		if return_doc != None:
+			l = self.collection.aggregate([
+				{"$match":query},
+				{"$project":projection},
+				{"$sort":{"date":-1}},
+				{"$limit":return_doc},
+				{"$unwind":"$data"}  #since the array only have 1 element
+			])
+			return list(l)
+		else:
+			l = self.collection.aggregate([
+				{"$match":query},
+				{"$project":projection},
+				{"$sort":{"date":-1}},
+				{"$unwind":"$data"}  #since the array only have 1 element
+			])
+			return list(l)
+		
+
+	def get_data_higher_than_rank(self,gameid,rank = 500):
+		#given a game, see how much date the game have a rank higher than rank
+		query = {"data.gameID":gameid}
+		
+		projection = {
+			"date":1,
+			"data":{
+				"$filter":{
+					"input":'$data',
+					"as":"data",
+					"cond":{"$and":[{"$eq":["$$data.gameID",gameid]},{"$lte":["$$data.rank",rank]}]}
+				}
+			},
+			"_id":0
+		}
+
+		l = self.collection.aggregate([
+			{"$match":query},
+			{"$project":projection},
+			{"$sort":{"date":-1}},
+			{"$unwind":"$data"}  #since the array only have 1 element
+		])
+		return list(l)
 			
+
+
 		

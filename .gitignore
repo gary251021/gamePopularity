@@ -5,3 +5,6 @@ packages/__pycache__/
 
 data/
 config.py
+
+#frontend
+node_modules/
